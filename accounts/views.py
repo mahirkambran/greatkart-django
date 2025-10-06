@@ -18,6 +18,11 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 
 
+
+from carts.views import _cart_id
+from carts.models import Cart, CartItem
+
+
 # Create your views here.
 
 
@@ -56,19 +61,71 @@ def register(request):
     return render(request, 'accounts/register.html', context)
 
 
+# def login(request):
+#     if request.method == 'POST':
+#         email = request.POST['email']
+#         password = request.POST['password']
+#         user = auth.authenticate(email=email, password=password)
+#         if user is not None:
+
+#             try:
+#                 print('inside try block')
+#                 cart = Cart.objects.get(cart_id=_cart_id(request))
+#                 is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+#                 print(is_cart_item_exists)
+#                 if is_cart_item_exists:
+#                     cart_item = CartItem.objects.filter(cart=cart)
+#                     print(cart_item)
+
+#                     #Getting the product variations by cart id
+#                     for item in cart_item:
+#                         item.user = user
+#                         item.save()
+#             except:
+#                 print('inside except block')
+#                 pass
+
+#             auth.login(request, user)
+#             messages.success(request, 'You are now logged in.')
+#             return redirect('dashboard')
+#         else:
+#             messages.error(request, 'Invalid login credentials')
+#             return redirect('login')
+#     return render(request, 'accounts/login.html')
+
+
+
 def login(request):
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
         user = auth.authenticate(email=email, password=password)
+
         if user is not None:
+            try:
+                cart = Cart.objects.get(cart_id=_cart_id(request))
+                cart_items = CartItem.objects.filter(cart=cart)
+
+                if cart_items.exists():
+                    for item in cart_items:
+                        item.user = user
+                        item.cart = None  # Detach from session cart
+                        item.save()
+            except Cart.DoesNotExist:
+                pass
+
             auth.login(request, user)
             messages.success(request, 'You are now logged in.')
             return redirect('dashboard')
+
         else:
             messages.error(request, 'Invalid login credentials')
             return redirect('login')
+
     return render(request, 'accounts/login.html')
+
+
+
 
 
 
