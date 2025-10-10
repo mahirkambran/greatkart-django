@@ -60,7 +60,17 @@ def place_order(request, total=0, quantity=0):
             data.order_number = order_number
             data.save()
 
-            return redirect('checkout')
+
+            order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
+            context = {
+                'order': order,
+                'cart_items': cart_items,
+                'total': total,
+                'tax': tax,
+                'grand_total': grand_total,
+            }
+
+            return render(request, 'orders/payments.html', context)
         else:
             # 🟡 Handle invalid form properly
             return render(request, 'orders/place_order.html', {
@@ -81,3 +91,6 @@ def place_order(request, total=0, quantity=0):
             'tax': tax,
             'grand_total': grand_total,
         })
+    
+
+
