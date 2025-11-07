@@ -18,3 +18,4 @@ products = Product.objects.all()[:5]
 print(f"First 5 products: {list(products)}")
 
 print("Database test completed!")
+

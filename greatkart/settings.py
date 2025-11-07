@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary',
+    'cloudinary_storage',
     'category',
     'accounts',
     'store',
@@ -105,6 +107,13 @@ DATABASES = {
     }
 }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
 # Add PostgreSQL config for production
 if 'DATABASE_URL' in os.environ:
     DATABASES['default'] = dj_database_url.config(
@@ -157,8 +166,25 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # media files configuration
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
+# Allow Render (or any host) to set a persistent media mount path via env var.
+# If MEDIA_ROOT is provided (e.g. '/data/media' mounted on Render), use that.
+media_root_env = os.environ.get('MEDIA_ROOT')
+if media_root_env:
+    MEDIA_ROOT = Path(media_root_env)
+else:
+    MEDIA_ROOT = BASE_DIR / 'media'
+
+
+# Cloudinary configuration
+CLOUDINARY_URL = config("CLOUDINARY_URL")
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+
+
 
 
 

@@ -13,3 +13,4 @@ export DEFAULT_FROM_EMAIL='noreply@greatkart.com'
 python3 manage.py migrate --noinput
 python3 manage.py collectstatic --noinput
 echo "Migrations completed successfully!"
+
