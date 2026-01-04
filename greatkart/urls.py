@@ -35,15 +35,5 @@ urlpatterns = [
     path('orders/', include('orders.urls')),
 ]
 
-# In DEBUG Django will serve media via static(); on Render (or other
-# production hosts) DEBUG is False so we add a simple media-serving
-# route when the app is running on Render and a persistent disk is mounted.
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-elif os.environ.get('RENDER') and settings.MEDIA_ROOT:
-    # Not ideal to serve media via Django in production, but acceptable
-    # for small apps when using Render's Persistent Disk. This provides
-    # access to uploaded files at /media/... from the mounted disk.
-    urlpatterns += [
-        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
-    ]

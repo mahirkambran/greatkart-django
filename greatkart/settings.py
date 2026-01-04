@@ -32,8 +32,15 @@ DEBUG = 'RENDER' not in os.environ
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'greatkart-django-r7xe.onrender.com',  # Your Render domain
+    'greatkart-django-r7xe.onrender.com',
+    'greatkartmahir.pythonanywhere.com',
 ]
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://greatkartmahir.pythonanywhere.com',
+]
+
 
 
 # Application definition
@@ -45,8 +52,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cloudinary',
-    'cloudinary_storage',
     'category',
     'accounts',
     'store',
@@ -100,12 +105,7 @@ AUTH_USER_MODEL = 'accounts.Account'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+
 
 DATABASES = {
     'default': {
@@ -156,7 +156,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
@@ -167,20 +167,11 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # media files configuration
 
 MEDIA_URL = '/media/'
-# Allow Render (or any host) to set a persistent media mount path via env var.
-# If MEDIA_ROOT is provided (e.g. '/data/media' mounted on Render), use that.
-media_root_env = os.environ.get('MEDIA_ROOT')
-if media_root_env:
-    MEDIA_ROOT = Path(media_root_env)
-else:
-    MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
-# Cloudinary configuration
-CLOUDINARY_URL = config("CLOUDINARY_URL")
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 
 
